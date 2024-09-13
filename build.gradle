@@ -49,6 +49,7 @@
 
     jar {
         archiveFileName = 'Java-app.jar'
+        enabled = false
     }
 
     repositories {
