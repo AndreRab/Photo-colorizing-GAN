@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Photo-colorizing-GAN.test.iml" filepath="$PROJECT_DIR$/.idea/modules/Photo-colorizing-GAN.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/main/python/python.iml" filepath="$PROJECT_DIR$/src/main/python/python.iml" />
     </modules>
   </component>
 </project>
