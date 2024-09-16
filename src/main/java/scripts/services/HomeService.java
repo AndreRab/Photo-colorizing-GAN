@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class HomeService {
-
     private static final Logger logger = LogManager.getLogger(HomeService.class);
 
     public String index(){
