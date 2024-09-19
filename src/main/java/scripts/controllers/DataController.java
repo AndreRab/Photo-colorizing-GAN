@@ -13,9 +13,4 @@ public class DataController {
     public DataController(DataService dataService) {
         this.dataService = dataService;
     }
-
-    @GetMapping("/send/String")
-    public String sendStringToPython(){
-        return dataService.sendStringToPython();
-    }
 }
