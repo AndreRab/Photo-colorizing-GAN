@@ -6,10 +6,12 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,12 +33,6 @@ public class DataService {
         }
 
         try {
-            Path uploadPath = Paths.get(UPLOAD_DIR);
-            if (!Files.exists(uploadPath)) {
-                logger.info("Create upload directory");
-                Files.createDirectories(uploadPath);
-            }
-
             String userId = (String) session.getAttribute("userId");
             if (userId == null) {
                 userId = UUID.randomUUID().toString();
@@ -52,15 +48,15 @@ public class DataService {
             byte[] bytes = file.getBytes();
             Path path = Paths.get(userDir + "/" + file.getOriginalFilename());
             Files.write(path, bytes);
-            logger.info("File was saved on server");
-            return sendPhotoToPython(path);
+            logger.info("File was received on server");
+            return sendPhotoToPython(path, userId);
 
         } catch (IOException e) {
             return "redirect:/upload";
         }
     }
 
-    public String sendPhotoToPython(Path path){
+    public String sendPhotoToPython(Path path, String userId){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         logger.info("Headers were set");
@@ -68,39 +64,53 @@ public class DataService {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         FileSystemResource image = new FileSystemResource(path.toFile());
         body.add("file", image);
+        body.add("userId", userId);
 
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
         logger.info("Request was created");
 
-        ResponseEntity<String> response = restTemplate.exchange(
-                pythonServerUrl,
-                HttpMethod.POST,
-                request,
-                String.class
-        );
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    pythonServerUrl,
+                    HttpMethod.POST,
+                    request,
+                    String.class
+            );
 
-        logger.info("Got response from python: " + response.getBody());
+            logger.info("Got response from Python: " + response.getBody());
 
-        if(response.getStatusCode() == HttpStatus.OK){
-            return "redirect:/colorized";
-        }
-        else{
-            return "redirect:/";
+            if (response.getStatusCode() == HttpStatus.OK) {
+                logger.info("Redirect to the page");
+                return "redirect:/colorized";
+            } else {
+                return "redirect:/";
+            }
+        } catch (Exception e) {
+            logger.error("Error in sending request: " + e.getMessage(), e);
+            return "redirect:";
         }
     }
 
-    public void receiveImageFromPython(MultipartFile file){
+
+    public void receiveImageFromPython(MultipartFile file, String userId) {
         try {
             if (file.isEmpty()) {
                 logger.info("Didn't get file");
+                return;
             }
+            if(userId == null){
+                logger.info("Didn't get userId");
+                return;
+            }
+            Path path = Paths.get("uploads", userId).resolve("colorized.png");
             byte[] bytes = file.getBytes();
-            logger.info("Received image of size: " + bytes.length);
-
+            Files.write(path, bytes);
+//            String imagePath = "/uploads/" + userId + "/colorized.png";
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     public String index(){
         return "uploadImage";

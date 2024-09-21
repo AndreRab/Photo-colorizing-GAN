@@ -12,6 +12,7 @@ def get_image():
         return "No file part", 400
 
     file = request.files['file']
+    user_id = request.form['userId']
     if file.filename == '':
         return "No selected file", 400
 
@@ -19,12 +20,15 @@ def get_image():
     processed_image = image_throw_ai(file)
 
     # Send the processed image to Java service
-    return send_image(processed_image)
+    return send_image(processed_image, user_id)
 
-def send_image(image_file):
+def send_image(image_file, user_id):
     # Convert image to byte stream
     image_stream = BytesIO(image_file.read())
-    files = {'file': ('image.png', image_stream, 'image/png')}
+    files = {
+        'file': ('image.png', image_stream, 'image/png'),
+        'userId': (None, user_id)  # Send userId as a form field, not a file
+    }
 
     # Java endpoint
     java_endpoint = "http://java-app:8082/colorized"
