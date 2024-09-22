@@ -6,13 +6,17 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Copy the requirements file
-COPY requirements.txt .
+COPY requirements.txt ./
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
-COPY . .
+# Copy the model file
+COPY full_model.pth ./
+
+COPY src/main/python/models.py ./src/main/python/
+COPY src/main/python/main.py ./src/main/python/
+# Include any other necessary directories or files
 
 # Expose the port Flask will run on
 EXPOSE 5000

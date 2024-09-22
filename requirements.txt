@@ -1,3 +1,7 @@
 Flask==2.3.0
 Werkzeug==2.3.5
-requests
+requests==2.32.3
+Pillow
+torch==2.1.1
+torchvision==0.16.1
+numpy<2.0
