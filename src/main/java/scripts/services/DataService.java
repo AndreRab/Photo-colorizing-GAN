@@ -6,12 +6,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,7 +22,8 @@ public class DataService {
     private static final Logger logger = LogManager.getLogger(HomeService.class);
     private static final String pythonServerUrl = "http://python-app:5000/process";
     private final RestTemplate restTemplate = new RestTemplate();
-    private static final String UPLOAD_DIR = "uploads/";
+
+    private static final String UPLOAD_DIR = "uploads";
 
     public String handleFileUpload(MultipartFile file, HttpSession session) {
         if (file.isEmpty()) {
@@ -37,16 +36,17 @@ public class DataService {
             if (userId == null) {
                 userId = UUID.randomUUID().toString();
                 session.setAttribute("userId", userId);
+                logger.info(userId + " was created");
             }
 
-            Path userDir = Paths.get("uploads", userId);
+            Path userDir = Paths.get(UPLOAD_DIR, userId);
             if (!Files.exists(userDir)) {
-                logger.info("Create directory new session");
+                logger.info("Create directory for new session");
                 Files.createDirectories(userDir);
             }
 
             byte[] bytes = file.getBytes();
-            Path path = Paths.get(userDir + "/" + file.getOriginalFilename());
+            Path path = Paths.get(userDir.toString(), file.getOriginalFilename());
             Files.write(path, bytes);
             logger.info("File was received on server");
             return sendPhotoToPython(path, userId);
@@ -77,10 +77,10 @@ public class DataService {
                     String.class
             );
 
-            logger.info("Got response from Python: " + response.getBody());
+            logger.info("Got response from Python");
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                logger.info("Redirect to the page");
+                logger.info("Python status: OK");
                 return "redirect:/colorized";
             } else {
                 return "redirect:/";
@@ -105,7 +105,6 @@ public class DataService {
             Path path = Paths.get("uploads", userId).resolve("colorized.png");
             byte[] bytes = file.getBytes();
             Files.write(path, bytes);
-//            String imagePath = "/uploads/" + userId + "/colorized.png";
         } catch (Exception e) {
             e.printStackTrace();
         }

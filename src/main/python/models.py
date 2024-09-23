@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import os
 
 class UNetGenerator(nn.Module):
     def __init__(self):
@@ -124,12 +125,20 @@ class Discriminator(nn.Module):
     def forward(self, x):
         return self.model(x)
 
-image_size = 256
 
-discriminator = Discriminator(image_size)
-generator = UNetGenerator()
+def load_model(image_size):
+    discriminator = Discriminator(image_size)
+    generator = UNetGenerator()
 
-model = {
-    "discriminator": discriminator,
-    "generator": generator
-}
+    random_model = {
+        "discriminator": discriminator,
+        "generator": generator
+    }
+
+    if os.path.exists('full_model.pth'):
+        model = torch.load('full_model.pth')
+        print("Model was loaded")
+    else:
+        model = random_model
+        print("Model wasn't found")
+    return model

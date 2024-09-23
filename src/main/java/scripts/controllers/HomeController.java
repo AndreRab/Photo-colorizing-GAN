@@ -1,5 +1,6 @@
 package scripts.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import scripts.services.DataService;
@@ -16,7 +17,7 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String index(){
-        return this.homeService.index();
+    public String index(HttpSession session){
+        return this.homeService.index(session);
     }
 }
