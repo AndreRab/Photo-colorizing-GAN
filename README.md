@@ -34,17 +34,19 @@ Feel free to try it out and add vibrant colors to your old black-and-white photo
    ```bash
    git clone https://github.com/AndreRab/Photo-colorizing-GAN.git
    ```
-2. **Navigate to the Project Directory**:
+   **Don't forget to clone the model with the help of [Git LFS](https://git-lfs.com/)**
+   
+3. **Navigate to the Project Directory**:
    Change your directory to the project folder:
     ```bash
     cd Photo-colorizing-GAN
     ```
-3. **Build the Project**:
+4. **Build the Project**:
    Use Docker-compose to build the project:
    ```bash
    docker-compose up --build -d
    ```
-4. **Access the Application**:
+5. **Access the Application**:
    Open your web browser and navigate to http://localhost:8082 to access the application.
 
 ## Installation using Docker
@@ -64,6 +66,8 @@ Feel free to try it out and add vibrant colors to your old black-and-white photo
    ```bash
    ./gradlew deploy
    ```
+   **Don't forget to clone the model with the help of [Git LFS](https://git-lfs.com/)**
+   
 4. **Access the Application**:
    Open your web browser and navigate to http://localhost:8082 to access the application.
 
