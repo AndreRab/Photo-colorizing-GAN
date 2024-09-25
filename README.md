@@ -89,6 +89,8 @@ Here are examples of colorizing for the pictures that my model did not see durin
 ![image](https://github.com/user-attachments/assets/faf67fea-c526-4d10-b4f0-6ceaa8475a7d)
 ![image](https://github.com/user-attachments/assets/5d1541f3-fa81-44ff-a301-84125656405a)
 ![image](https://github.com/user-attachments/assets/2c59b6f7-a080-4879-8428-0037f9c6db32)
+![image](https://github.com/user-attachments/assets/05b588a3-962d-44af-8d04-fbc137c14d35)
+
 
 
 
